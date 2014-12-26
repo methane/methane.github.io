@@ -11,10 +11,10 @@
     
     <item>
       <title>Faster unicode access from Python 3.3/C API</title>
-      <link>http://methane.github.io/posts/fast-utf8-encode/</link>
+      <link>http://methane.github.io/2014/12/fast-utf8-encode/</link>
       <pubDate>Fri, 26 Dec 2014 00:00:00 UTC</pubDate>
       
-      <guid>http://methane.github.io/posts/fast-utf8-encode/</guid>
+      <guid>http://methane.github.io/2014/12/fast-utf8-encode/</guid>
       <description>
 
 &lt;p&gt;Python 3.3 intorduces &lt;a href=&#34;https://www.python.org/dev/peps/pep-0393/&#34;&gt;PEP 393 Flexible String Representation&lt;/a&gt;.
