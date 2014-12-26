@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Faster unicode access from Python 3.3/C API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <link href="" rel="alternate" type="application/rss+xml" title="Python Bytes" />
+  <link href="http://localhost:1313/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://localhost:1313/css/hc.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_light.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+    <body>
+<div class="nav-toggle"><i class="fa fa-bars fa-2x"></i> Herring Cove </div>
+      <div id = "wrapper">
+
+
+<div class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <p class="navbar-brand">Python Bytes</p>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li><a href="http://localhost:1313/post/">Posts</a></li>
+          <li><a href="http://localhost:1313/about/">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+       
+       <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand"><a href="http://localhost:1313/"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
+          <hr />
+          <li><a href="http://localhost:1313/post/">Posts</a></li>
+          <li><a href="http://localhost:1313/about/">About</a></li>
+          <hr />
+          <div id="social-wrapper">
+           <li> <a href="https://twitter.com/methane"><i class="fa fa-twitter-square"></i> @twitter</a></li>
+           
+           
+           <li> <a href="https://github.com/methane"><i class="fa fa-github-square"></i> github</a> </li>
+         </div>
+       </ul>
+     </div>
+
+     <div class="container">
+
+
+  <div id="article">
+   <div class="article-title">Faster unicode access from Python 3.3/C API</div>
+   <p class="meta"><small>&nbsp;<i class="fa fa-calendar-o"></i> 2014-12-26</small></p> <hr/>
+   <div class="post">
+     
+
+<p>Python 3.3 intorduces <a href="https://www.python.org/dev/peps/pep-0393/">PEP 393 Flexible String Representation</a>.
+This is not only memory efficient, but also make it fast especially extension module.
+Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
+you can do it for ASCII or Latin-1 string.</p>
+
+<h2 id="toc_0">PEP 393 summarized</h2>
+
+<p>There are some internal representation for unicode.</p>
+
+<h3 id="toc_1">Compact (non ASCII)</h3>
+
+<p>Compact representation is basic form of unicode.</p>
+
+<pre>
++--------+--------+------+-------+--------------+-------+-------------+--------------+
+| Header | length | hash | *wstr | utf-8 length | *utf8 | wstr_length | DATA ... NUL |
++--------+--------+------+-------+--------------+-------+-------------+--------------+
+</pre>
+
+<p>DATA is array of codepoints.  Each code point have size of 1byte, 2byte or 4byte (KIND).
+When unicode only contains latin-1 chars (and contains no-ASCII chars), each codepoint is represented 1byte.</p>
+
+<p>wstr and utf8 is cache for Python/C API.  When calling <code>PyUnicode_AsUTF8()</code> or <code>PyUnicode_AsUTF8AndSize()</code>, utf8 cache is created.
+This is how it encode utf-8:</p>
+
+<pre><code class="language-c">    if (PyUnicode_UTF8(unicode) == NULL) {
+        assert(!PyUnicode_IS_COMPACT_ASCII(unicode));
+        bytes = _PyUnicode_AsUTF8String(unicode, &quot;strict&quot;);
+        if (bytes == NULL)
+            return NULL;
+        _PyUnicode_UTF8(unicode) = PyObject_MALLOC(PyBytes_GET_SIZE(bytes) + 1);
+        if (_PyUnicode_UTF8(unicode) == NULL) {
+            PyErr_NoMemory();
+            Py_DECREF(bytes);
+            return NULL;
+        }
+        _PyUnicode_UTF8_LENGTH(unicode) = PyBytes_GET_SIZE(bytes);
+        Py_MEMCPY(_PyUnicode_UTF8(unicode),
+                  PyBytes_AS_STRING(bytes),
+                  _PyUnicode_UTF8_LENGTH(unicode) + 1);
+        Py_DECREF(bytes);
+    }
+
+    if (psize)
+        *psize = PyUnicode_UTF8_LENGTH(unicode);
+    return PyUnicode_UTF8(unicode);
+</code></pre>
+
+<p>As you can see, this is slower and inefficient than <code>PyUnicode_AsUTF8String()</code> since it has additional malloc and memcpy.
+You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cache is used later.</p>
+
+<h3 id="toc_2">Compact ASCII</h3>
+
+<p>ASCII string is special:</p>
+
+<ul>
+<li>utf-8 length == length</li>
+<li>utf-8 data == data</li>
+<li>wstr length == length</li>
+</ul>
+
+<p>So it is more compact than compact representation.</p>
+
+<pre>
++--------+--------+------+-------+--------------+
+| Header | length | hash | *wstr | DATA ... NUL |
++--------+--------+------+-------+--------------+
+</pre>
+
+<p><code>PyUnicode_AsUTF8()</code> and <code>PyUnicode_AsUTF8AndSize()</code> doesn&rsquo;t create cache.  You can use it free.</p>
+
+<h3 id="toc_3">Legacy</h3>
+
+<p>Legacy representation is only for support deprecated APIs.</p>
+
+<h2 id="toc_4">Example 1: ujson</h2>
+
+<p>Typical JSON contains many ascii strings.  Encoding to utf-8 can be skipped when unicode is Compact ASCII.
+Otherwise, I don&rsquo;t use <code>PyUnicode_AsUTF8AndSize()</code> since it can be slower and memory inefficient.</p>
+
+<pre><code># https://github.com/esnme/ultrajson/pull/159
+diff --git a/python/objToJSON.c b/python/objToJSON.c
+index e56aa9b..a5b2f62 100644
+--- a/python/objToJSON.c
++++ b/python/objToJSON.c
+@@ -145,7 +145,17 @@ static void *PyStringToUTF8(JSOBJ _obj, JSONTypeContext *tc, void *outValue, siz
+ static void *PyUnicodeToUTF8(JSOBJ _obj, JSONTypeContext *tc, void *outValue, size_t *_outLen)
+ {
+   PyObject *obj = (PyObject *) _obj;
+-  PyObject *newObj = PyUnicode_EncodeUTF8 (PyUnicode_AS_UNICODE(obj), PyUnicode_GET_SIZE(obj), NULL);
++  PyObject *newObj;
++#if (PY_VERSION_HEX &gt;= 0x03030000)
++  if(PyUnicode_IS_COMPACT_ASCII(obj))
++  {
++    Py_ssize_t len;
++    char *data = PyUnicode_AsUTF8AndSize(obj, &amp;len);
++    *_outLen = len;
++    return data;
++  }
++#endif
++  newObj = PyUnicode_AsUTF8String(obj);
+   if(!newObj)
+   {
+     return NULL;
+</code></pre>
+
+<p>Before this patch:</p>
+
+<pre><code class="language-console">$ python3.4 -m timeit -n 10000 -s 'import ujson; x = [&quot;a&quot;*10]*100' 'ujson.dumps(x)'
+10000 loops, best of 3: 15.8 usec per loop
+</code></pre>
+
+<p>After this patch:</p>
+
+<pre><code class="language-console">$ python3.4 -m timeit -n 10000 -s 'import ujson; x = [&quot;a&quot;*10]*100' 'ujson.dumps(x)'
+10000 loops, best of 3: 7.14 usec per loop
+</code></pre>
+
+<h2 id="toc_5">Example 2: meinheld</h2>
+
+   </div>
+ </div>
+
+
+ <a href="https://twitter.com/share" class="twitter-share-button " data-size="small" data-count="none">Tweet</a>
+ <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+ <ul class="pager">
+     
+     
+</ul>
+
+
+
+    </ul>
+    </div>
+    <footer>
+        <p class="text-muted credit">&copy; . All rights reserved. </p>
+    </footer>
+ 
+    <script src="/js/jquery-1.10.2.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/hc.js"></script>
+<script>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+
+</html>
+
