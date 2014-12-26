@@ -68,8 +68,6 @@
    <div class="post">
      
 
-<p><strong>This post is DRAFT</strong></p>
-
 <p>Python 3.3 intorduces <a href="https://www.python.org/dev/peps/pep-0393/">PEP 393 Flexible String Representation</a>.
 This is not only memory efficient, but also make it fast especially extension module.
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
@@ -83,11 +81,10 @@ you can do it for ASCII or Latin-1 string.</p>
 
 <p>Compact representation is basic form of unicode.</p>
 
-<pre>
-+--------+--------+------+-------+--------------+-------+-------------+--------------+
+<pre><code>+--------+--------+------+-------+--------------+-------+-------------+--------------+
 | Header | length | hash | *wstr | utf-8 length | *utf8 | wstr_length | DATA ... NUL |
 +--------+--------+------+-------+--------------+-------+-------------+--------------+
-</pre>
+</code></pre>
 
 <p>DATA is array of codepoints.  Each code point have size of 1byte, 2byte or 4byte (KIND).
 When unicode only contains latin-1 chars (and contains no-ASCII chars), each codepoint is represented 1byte.</p>
@@ -133,11 +130,10 @@ You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cac
 
 <p>So it is more compact than compact representation.</p>
 
-<pre>
-+--------+--------+------+-------+--------------+
+<pre><code>+--------+--------+------+-------+--------------+
 | Header | length | hash | *wstr | DATA ... NUL |
 +--------+--------+------+-------+--------------+
-</pre>
+</code></pre>
 
 <p><code>PyUnicode_AsUTF8()</code> and <code>PyUnicode_AsUTF8AndSize()</code> doesn&rsquo;t create cache.  You can use it free.</p>
 
@@ -145,7 +141,9 @@ You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cac
 
 <p>Legacy representation is only for support deprecated APIs.</p>
 
-<h2 id="toc_4">Example 1: <a href="https://github.com/esnme/ultrajson">ujson</a></h2>
+<h2 id="toc_4">Case 1: <a href="https://github.com/esnme/ultrajson">UltraJSON</a></h2>
+
+<p>UltraJSON is fast JSON encoder and decoder.</p>
 
 <p>Typical JSON contains many ascii strings.  Encoding to utf-8 can be skipped when unicode is Compact ASCII.
 Otherwise, I don&rsquo;t use <code>PyUnicode_AsUTF8AndSize()</code> since it can be slower and memory inefficient.</p>
@@ -188,15 +186,110 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 </code></pre>
 
-<h2 id="toc_5">Example 2: <a href="https://github.com/mopemope/meinheld">meinheld</a></h2>
+<h2 id="toc_5">Case 2: <a href="https://github.com/mopemope/meinheld">meinheld</a></h2>
 
-<p>HTTP header field name is ASCII.  And <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a> specifies header value should be decoded by latin-1.</p>
+<p>meinheld is fast WSGI server.  It can be used with <a href="http://gunicorn.org/">gunicorn</a> or <a href="http://circus.readthedocs.org/">circus</a> + <a href="https://chaussette.readthedocs.org/">chaussette</a>.</p>
+
+<p>HTTP header field name is ASCII.  And <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a> specifies field value should be decoded by latin-1.</p>
 
 <p><code>PyUnicode_New()</code> accepts maxchar as second argument. When maxchar&lt;128, it creates Compact ASCII unicode.</p>
 
 <p>Since field name is ASCII, environment name like <code>&quot;HTTP_ACCEPT_ENCODING&quot;</code> can be created as Compact ASCII.</p>
 
 <p>field value may contain non-ASCII characters.  So I use <code>PyUnicode_DecodeLatin1()</code>.  It checks maxchar and create best unicode representation.</p>
+
+<p><a href="https://github.com/mopemope/meinheld/blob/c47cdba7a1fe6a80dc8a4f9f2ac5288104f1102f/meinheld/server/response.c#L44-L59">Here</a>
+is how to create header string in <code>char*</code> from unicode:</p>
+
+<pre><code class="language-python">static int
+wsgi_to_bytes(PyObject *value, char **data, Py_ssize_t *len)
+{
+#ifdef PY3
+    if (!PyUnicode_Check(value)) {
+        PyErr_Format(PyExc_TypeError, &quot;expected unicode object, value &quot;
+                     &quot;of type %.200s found&quot;, value-&gt;ob_type-&gt;tp_name);
+        return -1;
+    }
+    if (PyUnicode_READY(value) == -1) {
+        return -1;
+    }
+    if (PyUnicode_KIND(value) != PyUnicode_1BYTE_KIND) {
+        PyErr_SetString(PyExc_ValueError,
+                        &quot;unicode object contains non latin-1 characters&quot;);
+        return -1;
+    }
+    *len = PyUnicode_GET_SIZE(value);
+    *data = (char*)PyUnicode_1BYTE_DATA(value);
+    return 0;
+#else
+    return PyBytes_AsStringAndSize(value, data, len);
+#endif
+}
+</code></pre>
+
+<p>Previously, it convert unicode to bytes with <code>PyUnicode_AsLatin1String()</code>.</p>
+
+<p>Before this change:</p>
+
+<pre><code class="language-console">$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+^T^N  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   385.68us   25.67us 843.00us   74.12%
+    Req/Sec    12.42k   632.30    13.78k    59.64%
+  234475 requests in 10.00s, 39.13MB read
+Requests/sec:  23448.18
+Transfer/sec:      3.91MB
+$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   379.78us   24.96us   0.90ms   73.86%
+    Req/Sec    12.46k   639.91    14.00k    52.45%
+  235688 requests in 10.00s, 39.33MB read
+Requests/sec:  23569.38
+Transfer/sec:      3.93MB
+$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   388.15us   24.65us 524.00us   73.31%
+    Req/Sec    12.43k   623.66    13.78k    55.26%
+  234899 requests in 10.00s, 39.20MB read
+Requests/sec:  23490.25
+Transfer/sec:      3.92MB
+</code></pre>
+
+<p>After this change:</p>
+
+<pre><code class="language-console">$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   339.98us   65.87us   4.33ms   92.45%
+    Req/Sec    13.56k     1.43k   15.44k    81.82%
+  253189 requests in 10.00s, 42.26MB read
+Requests/sec:  25319.67
+Transfer/sec:      4.23MB
+$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   364.82us   78.85us   1.01ms   84.10%
+    Req/Sec    12.99k     1.81k   15.44k    80.63%
+  243685 requests in 10.00s, 40.67MB read
+Requests/sec:  24368.90
+Transfer/sec:      4.07MB
+$ ./wrk http://localhost:8000/
+Running 10s test @ http://localhost:8000/
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   329.00us   22.40us 464.00us   73.99%
+    Req/Sec    13.66k   760.36    15.44k    61.95%
+  258730 requests in 10.00s, 43.18MB read
+Requests/sec:  25873.60
+Transfer/sec:      4.32MB
+</code></pre>
 
    </div>
  </div>
