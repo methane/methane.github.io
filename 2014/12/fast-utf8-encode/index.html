@@ -68,6 +68,8 @@
    <div class="post">
      
 
+<p><strong>This post is DRAFT</strong></p>
+
 <p>Python 3.3 intorduces <a href="https://www.python.org/dev/peps/pep-0393/">PEP 393 Flexible String Representation</a>.
 This is not only memory efficient, but also make it fast especially extension module.
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
@@ -143,7 +145,7 @@ You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cac
 
 <p>Legacy representation is only for support deprecated APIs.</p>
 
-<h2 id="toc_4">Example 1: ujson</h2>
+<h2 id="toc_4">Example 1: <a href="https://github.com/esnme/ultrajson">ujson</a></h2>
 
 <p>Typical JSON contains many ascii strings.  Encoding to utf-8 can be skipped when unicode is Compact ASCII.
 Otherwise, I don&rsquo;t use <code>PyUnicode_AsUTF8AndSize()</code> since it can be slower and memory inefficient.</p>
@@ -186,7 +188,15 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 </code></pre>
 
-<h2 id="toc_5">Example 2: meinheld</h2>
+<h2 id="toc_5">Example 2: <a href="https://github.com/mopemope/meinheld">meinheld</a></h2>
+
+<p>HTTP header field name is ASCII.  And <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a> specifies header value should be decoded by latin-1.</p>
+
+<p><code>PyUnicode_New()</code> accepts maxchar as second argument. When maxchar&lt;128, it creates Compact ASCII unicode.</p>
+
+<p>Since field name is ASCII, environment name like <code>&quot;HTTP_ACCEPT_ENCODING&quot;</code> can be created as Compact ASCII.</p>
+
+<p>field value may contain non-ASCII characters.  So I use <code>PyUnicode_DecodeLatin1()</code>.  It checks maxchar and create best unicode representation.</p>
 
    </div>
  </div>

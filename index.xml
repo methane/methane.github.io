@@ -17,6 +17,8 @@
       <guid>http://methane.github.io/2014/12/fast-utf8-encode/</guid>
       <description>
 
+&lt;p&gt;&lt;strong&gt;This post is DRAFT&lt;/strong&gt;&lt;/p&gt;
+
 &lt;p&gt;Python 3.3 intorduces &lt;a href=&#34;https://www.python.org/dev/peps/pep-0393/&#34;&gt;PEP 393 Flexible String Representation&lt;/a&gt;.
 This is not only memory efficient, but also make it fast especially extension module.
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
@@ -92,7 +94,7 @@ You should prefer &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; except that 
 
 &lt;p&gt;Legacy representation is only for support deprecated APIs.&lt;/p&gt;
 
-&lt;h2 id=&#34;toc_4&#34;&gt;Example 1: ujson&lt;/h2&gt;
+&lt;h2 id=&#34;toc_4&#34;&gt;Example 1: &lt;a href=&#34;https://github.com/esnme/ultrajson&#34;&gt;ujson&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;Typical JSON contains many ascii strings.  Encoding to utf-8 can be skipped when unicode is Compact ASCII.
 Otherwise, I don&amp;rsquo;t use &lt;code&gt;PyUnicode_AsUTF8AndSize()&lt;/code&gt; since it can be slower and memory inefficient.&lt;/p&gt;
@@ -135,7 +137,15 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;toc_5&#34;&gt;Example 2: meinheld&lt;/h2&gt;
+&lt;h2 id=&#34;toc_5&#34;&gt;Example 2: &lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;meinheld&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;HTTP header field name is ASCII.  And &lt;a href=&#34;https://www.python.org/dev/peps/pep-3333/&#34;&gt;PEP 3333&lt;/a&gt; specifies header value should be decoded by latin-1.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PyUnicode_New()&lt;/code&gt; accepts maxchar as second argument. When maxchar&amp;lt;128, it creates Compact ASCII unicode.&lt;/p&gt;
+
+&lt;p&gt;Since field name is ASCII, environment name like &lt;code&gt;&amp;quot;HTTP_ACCEPT_ENCODING&amp;quot;&lt;/code&gt; can be created as Compact ASCII.&lt;/p&gt;
+
+&lt;p&gt;field value may contain non-ASCII characters.  So I use &lt;code&gt;PyUnicode_DecodeLatin1()&lt;/code&gt;.  It checks maxchar and create best unicode representation.&lt;/p&gt;
 </description>
     </item>
     
