@@ -242,5 +242,41 @@ Transfer/sec:      4.32MB
 </description>
     </item>
     
+    <item>
+      <title></title>
+      <link>http://methane.github.io/about/</link>
+      <pubDate>Tue, 01 Jan 2008 00:00:00 UTC</pubDate>
+      
+      <guid>http://methane.github.io/about/</guid>
+      <description>
+
+&lt;h1 id=&#34;toc_0&#34;&gt;About me&lt;/h1&gt;
+
+&lt;h2 id=&#34;toc_1&#34;&gt;Bio&lt;/h2&gt;
+
+&lt;dl&gt;
+&lt;dt&gt;name:&lt;/dt&gt;
+&lt;dd&gt;INADA Naoki&lt;/dd&gt;
+&lt;dt&gt;Github and Twitter ID:&lt;/dt&gt;
+&lt;dd&gt;methane&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;h2 id=&#34;toc_2&#34;&gt;Work&lt;/h2&gt;
+
+&lt;p&gt;I develop middleware of online games at &lt;a href=&#34;http://www.klab.com/&#34;&gt;KLab Inc.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_3&#34;&gt;Products&lt;/h2&gt;
+
+&lt;p&gt;I am owner or core committer of these products:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/msgpack/msgpack-python&#34;&gt;msgpack-python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/PyMySQL/mysqlclient&#34;&gt;mysqlclient&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/PyMySQL/PyMySQL&#34;&gt;PyMySQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;Meinheld&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
