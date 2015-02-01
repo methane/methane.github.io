@@ -36,7 +36,7 @@ It said OpenStack developers considering about moving from MySQL-python to PyMyS
 &lt;p&gt;Despite I&amp;rsquo;m not a good document/test writer, I have some experience of high performance Python and asynchronous I/O programming.
 So I want to improve PyMySQL with Mike and OpenStack.&lt;/p&gt;
 
-&lt;p&gt;On the other hand, I have some ideas about improving mysqlclient-python: Support new async APIs in MariaDB&amp;rsquo;s connectors, use ctypes or cffi to improve performance on PyPy. But I have enough time. So I decided not doing them in foreseeable future. It doesn&amp;rsquo;t means mysqlclient-python is deprecated. It will be stable MySQL driver as it has so far.&lt;/p&gt;
+&lt;p&gt;On the other hand, I have some ideas about improving mysqlclient-python: Support new async APIs in MariaDB&amp;rsquo;s connectors, use ctypes or cffi to improve performance on PyPy. But I don&amp;rsquo;t have enough time. So I decided not doing them in foreseeable future. It doesn&amp;rsquo;t means mysqlclient-python is deprecated. It will be stable MySQL driver as it has so far.&lt;/p&gt;
 </description>
     </item>
     
