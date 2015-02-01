@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Welcome to PyMySQL, Mike Bayer (@zzzeek)!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <link href="" rel="alternate" type="application/rss+xml" title="Python Bytes" />
@@ -63,36 +63,28 @@
 
 
   <div id="article">
-   <div class="article-title"></div>
-   <p class="meta"><small>&nbsp;<i class="fa fa-calendar-o"></i> 0001-01-01</small></p> <hr/>
+   <div class="article-title">Welcome to PyMySQL, Mike Bayer (@zzzeek)!</div>
+   <p class="meta"><small>&nbsp;<i class="fa fa-calendar-o"></i> 2015-02-01</small></p> <hr/>
    <div class="post">
-     
+     <p>There are three major MySQL Driver in Python: MySQL-python, PyMySQL and MySQL-Connector/Python.</p>
 
-<h1 id="about-me:6083a88ee3411b0d17ce02d738f69d47">About me</h1>
+<p>Since MySQL-python&rsquo;s development is slowdown, I&rsquo;ve made fork named &ldquo;mysqlclient-python&rdquo;.  It supports Python 3 and fixed some bugs.</p>
 
-<h2 id="bio:6083a88ee3411b0d17ce02d738f69d47">Bio</h2>
+<p>I&rsquo;m also only active maintainer of PyMySQL. It means I maintains <sup>2</sup>&frasl;<sub>3</sub> of Python-MySQL world.
+But I have several interest other than MySQL. I have 9-month old baby. Additionally, I&rsquo;m not good at writing English.
+So I&rsquo;m not a good maintainer. Python/MySQL world is stopped compared with Python/PostgreSQL.</p>
 
-<dl>
-<dt>name:</dt>
-<dd>INADA Naoki</dd>
-<dt>Github and Twitter ID:</dt>
-<dd>methane</dd>
-</dl>
+<p>But last weekend, Mike Bayer (@zzzeek, SQLAlchemy developer) posted one mail to PyMySQL Users ML.
+It said OpenStack developers considering about moving from MySQL-python to PyMySQL, and ask a question about can I review and accept pull requests from Mike and OpenStack developers.</p>
 
-<h2 id="work:6083a88ee3411b0d17ce02d738f69d47">Work</h2>
+<p>The answer is &hellip; No!  I will not have enough time.</p>
 
-<p>I develop middleware of online games at <a href="http://www.klab.com/">KLab Inc.</a></p>
+<p>But this is a huge chance to me and Python/MySQL world. SQLAlchemy is one of greatest O/R mapper in Python. OpenStack is one of most active project in Python. I invited him to PyMySQL Organization on Github and he agreed readily.</p>
 
-<h2 id="products:6083a88ee3411b0d17ce02d738f69d47">Products</h2>
+<p>Despite I&rsquo;m not a good document/test writer, I have some experience of high performance Python and asynchronous I/O programming.
+So I want to improve PyMySQL with Mike and OpenStack.</p>
 
-<p>I am owner or core committer of these products:</p>
-
-<ul>
-<li><a href="https://github.com/msgpack/msgpack-python">msgpack-python</a></li>
-<li><a href="https://github.com/PyMySQL/mysqlclient">mysqlclient</a></li>
-<li><a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a></li>
-<li><a href="https://github.com/mopemope/meinheld">Meinheld</a></li>
-</ul>
+<p>On the other hand, I have some ideas about improving mysqlclient-python: Support new async APIs in MariaDB&rsquo;s connectors, use ctypes or cffi to improve performance on PyPy. But I have enough time. So I decided not doing them in foreseeable future. It doesn&rsquo;t means mysqlclient-python is deprecated. It will be stable MySQL driver as it has so far.</p>
 
    </div>
  </div>
@@ -102,16 +94,16 @@
  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
  <ul class="pager">
-      &nbsp;<li class="previous"><a href="http://methane.github.io/2014/12/fast-utf8-encode/"> Faster unicode access from Python 3.3/C API</a></li>
      
+      &nbsp;<li class="next"><a href="http://methane.github.io/2014/12/fast-utf8-encode/"> Faster unicode access from Python 3.3/C API</a></li>
 </ul>
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'pythonbyte';
-    var disqus_identifier = 'http:\/\/methane.github.io\/about\/';
-    var disqus_title = '';
-    var disqus_url = 'http:\/\/methane.github.io\/about\/';
+    var disqus_identifier = 'http:\/\/methane.github.io\/2015\/02\/welcome-to-pymysql-zzzeek\/';
+    var disqus_title = 'Welcome to PyMySQL, Mike Bayer (@zzzeek)!';
+    var disqus_url = 'http:\/\/methane.github.io\/2015\/02\/welcome-to-pymysql-zzzeek\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

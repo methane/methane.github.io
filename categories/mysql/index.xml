@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mysql on Python Bytes</title>
+    <link>http://methane.github.io/categories/mysql/</link>
+    <description>Recent content in Mysql on Python Bytes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    
+    
+    <lastBuildDate>Sun, 01 Feb 2015 00:00:00 UT</lastBuildDate>
+    <atom:link href="http://methane.github.io/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Welcome to PyMySQL, Mike Bayer (@zzzeek)!</title>
+      <link>http://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</link>
+      <pubDate>Sun, 01 Feb 2015 00:00:00 UT</pubDate>
+      
+      <guid>http://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</guid>
+      <description>&lt;p&gt;There are three major MySQL Driver in Python: MySQL-python, PyMySQL and MySQL-Connector/Python.&lt;/p&gt;
+
+&lt;p&gt;Since MySQL-python&amp;rsquo;s development is slowdown, I&amp;rsquo;ve made fork named &amp;ldquo;mysqlclient-python&amp;rdquo;.  It supports Python 3 and fixed some bugs.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m also only active maintainer of PyMySQL. It means I maintains &lt;sup&gt;2&lt;/sup&gt;&amp;frasl;&lt;sub&gt;3&lt;/sub&gt; of Python-MySQL world.
+But I have several interest other than MySQL. I have 9-month old baby. Additionally, I&amp;rsquo;m not good at writing English.
+So I&amp;rsquo;m not a good maintainer. Python/MySQL world is stopped compared with Python/PostgreSQL.&lt;/p&gt;
+
+&lt;p&gt;But last weekend, Mike Bayer (@zzzeek, SQLAlchemy developer) posted one mail to PyMySQL Users ML.
+It said OpenStack developers considering about moving from MySQL-python to PyMySQL, and ask a question about can I review and accept pull requests from Mike and OpenStack developers.&lt;/p&gt;
+
+&lt;p&gt;The answer is &amp;hellip; No!  I will not have enough time.&lt;/p&gt;
+
+&lt;p&gt;But this is a huge chance to me and Python/MySQL world. SQLAlchemy is one of greatest O/R mapper in Python. OpenStack is one of most active project in Python. I invited him to PyMySQL Organization on Github and he agreed readily.&lt;/p&gt;
+
+&lt;p&gt;Despite I&amp;rsquo;m not a good document/test writer, I have some experience of high performance Python and asynchronous I/O programming.
+So I want to improve PyMySQL with Mike and OpenStack.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I have some ideas about improving mysqlclient-python: Support new async APIs in MariaDB&amp;rsquo;s connectors, use ctypes or cffi to improve performance on PyPy. But I have enough time. So I decided not doing them in foreseeable future. It doesn&amp;rsquo;t means mysqlclient-python is deprecated. It will be stable MySQL driver as it has so far.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

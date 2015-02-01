@@ -47,7 +47,7 @@
         <ul class="sidebar-nav">
           <li class="sidebar-brand"><a href="http://methane.github.io/"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
           <hr />
-          <li><a href="http://methane.github.io/post/">Posts</a></li>
+          <li><a href="http://methane.github.io/posts/">Posts</a></li>
           <li><a href="http://methane.github.io/about/">About</a></li>
           <hr />
           <div id="social-wrapper">
@@ -73,11 +73,11 @@ This is not only memory efficient, but also make it fast especially extension mo
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
 you can do it for ASCII or Latin-1 string.</p>
 
-<h2 id="toc_0">PEP 393 summarized</h2>
+<h2 id="pep-393-summarized:f558fad8cd1c1826bc94968b224919bb">PEP 393 summarized</h2>
 
 <p>There are some internal representation for unicode.</p>
 
-<h3 id="toc_1">Compact (non ASCII)</h3>
+<h3 id="compact-non-ascii:f558fad8cd1c1826bc94968b224919bb">Compact (non ASCII)</h3>
 
 <p>Compact representation is basic form of unicode.</p>
 
@@ -118,7 +118,7 @@ This is how it encode utf-8:</p>
 <p>As you can see, this is slower and inefficient than <code>PyUnicode_AsUTF8String()</code> since it has additional malloc and memcpy.
 You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cache is used later.</p>
 
-<h3 id="toc_2">Compact ASCII</h3>
+<h3 id="compact-ascii:f558fad8cd1c1826bc94968b224919bb">Compact ASCII</h3>
 
 <p>ASCII string is special:</p>
 
@@ -137,11 +137,11 @@ You should prefer <code>PyUnicode_AsUTF8String()</code> except that you know cac
 
 <p><code>PyUnicode_AsUTF8()</code> and <code>PyUnicode_AsUTF8AndSize()</code> doesn&rsquo;t create cache.  You can use it free.</p>
 
-<h3 id="toc_3">Legacy</h3>
+<h3 id="legacy:f558fad8cd1c1826bc94968b224919bb">Legacy</h3>
 
 <p>Legacy representation is only for support deprecated APIs.</p>
 
-<h2 id="toc_4">Case 1: <a href="https://github.com/esnme/ultrajson">UltraJSON</a></h2>
+<h2 id="case-1-ultrajson-https-github-com-esnme-ultrajson:f558fad8cd1c1826bc94968b224919bb">Case 1: <a href="https://github.com/esnme/ultrajson">UltraJSON</a></h2>
 
 <p>UltraJSON is fast JSON encoder and decoder.</p>
 
@@ -186,7 +186,7 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 </code></pre>
 
-<h2 id="toc_5">Case 2: <a href="https://github.com/mopemope/meinheld">meinheld</a></h2>
+<h2 id="case-2-meinheld-https-github-com-mopemope-meinheld:f558fad8cd1c1826bc94968b224919bb">Case 2: <a href="https://github.com/mopemope/meinheld">meinheld</a></h2>
 
 <p>meinheld is fast WSGI server.  It can be used with <a href="http://gunicorn.org/">gunicorn</a> or <a href="http://circus.readthedocs.org/">circus</a> + <a href="https://chaussette.readthedocs.org/">chaussette</a>.</p>
 
@@ -299,7 +299,7 @@ Transfer/sec:      4.32MB
  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
  <ul class="pager">
-     
+      &nbsp;<li class="previous"><a href="http://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/"> Welcome to PyMySQL, Mike Bayer (@zzzeek)!</a></li>
       &nbsp;<li class="next"><a href="http://methane.github.io/about/"> </a></li>
 </ul>
 
