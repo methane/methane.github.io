@@ -2,28 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://methane.github.io/</loc>
+    <loc>https://methane.github.io/</loc>
     <lastmod>2015-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://methane.github.io/2015/02/reduce-allocation-in-go-code/</loc>
+    <loc>https://methane.github.io/2015/02/reduce-allocation-in-go-code/</loc>
     <lastmod>2015-02-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</loc>
+    <loc>https://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</loc>
     <lastmod>2015-02-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://methane.github.io/2014/12/fast-utf8-encode/</loc>
+    <loc>https://methane.github.io/2014/12/fast-utf8-encode/</loc>
     <lastmod>2014-12-26T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://methane.github.io/about/</loc>
+    <loc>https://methane.github.io/about/</loc>
     <lastmod>0001-01-01T00:00:00+00:00</lastmod>
   </url>
   

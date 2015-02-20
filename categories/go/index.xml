@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Go on Python Bytes</title>
-    <link>http://methane.github.io/categories/go/</link>
+    <link>https://methane.github.io/categories/go/</link>
     <description>Recent content in Go on Python Bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -10,14 +10,14 @@
     
     
     <lastBuildDate>Thu, 19 Feb 2015 00:00:00 UT</lastBuildDate>
-    <atom:link href="http://methane.github.io/categories/go/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://methane.github.io/categories/go/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Reduce allocation in Go code</title>
-      <link>http://methane.github.io/2015/02/reduce-allocation-in-go-code/</link>
+      <link>https://methane.github.io/2015/02/reduce-allocation-in-go-code/</link>
       <pubDate>Thu, 19 Feb 2015 00:00:00 UT</pubDate>
       
-      <guid>http://methane.github.io/2015/02/reduce-allocation-in-go-code/</guid>
+      <guid>https://methane.github.io/2015/02/reduce-allocation-in-go-code/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve implemented parameter interpolation in &lt;a href=&#34;https://github.com/go-sql-driver/mysql&#34;&gt;go-sql-driver/mysql&lt;/a&gt;. You can enable it by adding &amp;ldquo;interpolateParams=true&amp;rdquo; option to dsn.&lt;/p&gt;
