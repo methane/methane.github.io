@@ -6,16 +6,13 @@
     <description>Recent content on Python Bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    
-    
-    
-    <lastBuildDate>Thu, 19 Feb 2015 00:00:00 UT</lastBuildDate>
+    <lastBuildDate>Thu, 19 Feb 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://methane.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Reduce allocation in Go code</title>
       <link>https://methane.github.io/2015/02/reduce-allocation-in-go-code/</link>
-      <pubDate>Thu, 19 Feb 2015 00:00:00 UT</pubDate>
+      <pubDate>Thu, 19 Feb 2015 00:00:00 +0000</pubDate>
       
       <guid>https://methane.github.io/2015/02/reduce-allocation-in-go-code/</guid>
       <description>
@@ -24,7 +21,7 @@
 
 &lt;p&gt;Why this feature is important is described in &lt;a href=&#34;https://vividcortex.com/blog/2014/11/19/analyzing-prepared-statement-performance-with-vividcortex/&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://eng.uservoice.com/blog/2015/01/28/introducing-gocraft/dbr/&#34;&gt;here&lt;/a&gt;. I don&amp;rsquo;t say lot about it here.&lt;/p&gt;
 
-&lt;p&gt;When writing low level library like mysql driver, you can&amp;rsquo;t assume user&amp;rsquo;s performance requiremnt. Especially, avoiding memory allocations is important. Go&amp;rsquo;s GC is not so fast. And everyone want memory usage of their server is stable.&lt;/p&gt;
+&lt;p&gt;When writing low level library like MySQL driver, you can&amp;rsquo;t assume user&amp;rsquo;s performance requirements. Especially, avoiding memory allocations is important. Go&amp;rsquo;s GC is not so fast. And everyone want memory usage of their server is stable.&lt;/p&gt;
 
 &lt;p&gt;So I&amp;rsquo;ve reduced allocations in the interpolation as possible. This post describes how I did it and coding tips to avoid allocations.&lt;/p&gt;
 
@@ -386,7 +383,7 @@ Generally speaking, duplicated code is evil. But &lt;code&gt;TEXT&lt;/code&gt; a
     <item>
       <title>Welcome to PyMySQL, Mike Bayer (@zzzeek)!</title>
       <link>https://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</link>
-      <pubDate>Sun, 01 Feb 2015 00:00:00 UT</pubDate>
+      <pubDate>Sun, 01 Feb 2015 00:00:00 +0000</pubDate>
       
       <guid>https://methane.github.io/2015/02/welcome-to-pymysql-zzzeek/</guid>
       <description>&lt;p&gt;There are three major MySQL Driver in Python: MySQL-python, PyMySQL and MySQL-Connector/Python.&lt;/p&gt;
@@ -414,7 +411,7 @@ So I want to improve PyMySQL with Mike and OpenStack.&lt;/p&gt;
     <item>
       <title>Faster unicode access from Python 3.3/C API</title>
       <link>https://methane.github.io/2014/12/fast-utf8-encode/</link>
-      <pubDate>Fri, 26 Dec 2014 00:00:00 UT</pubDate>
+      <pubDate>Fri, 26 Dec 2014 00:00:00 +0000</pubDate>
       
       <guid>https://methane.github.io/2014/12/fast-utf8-encode/</guid>
       <description>
@@ -647,7 +644,7 @@ Transfer/sec:      4.32MB
     <item>
       <title></title>
       <link>https://methane.github.io/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 UT</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://methane.github.io/about/</guid>
       <description>

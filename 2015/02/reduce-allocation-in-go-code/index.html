@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <link href="" rel="alternate" type="application/rss+xml" title="Python Bytes" />
-  <link href="https://methane.github.io/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://methane.github.io/css/hc.css" rel="stylesheet">
+  <link href="https://methane.github.io//css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://methane.github.io//css/hc.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <script>
 var host = "methane.github.io";
@@ -39,8 +39,8 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li><a href="https://methane.github.io/posts/">Posts</a></li>
-          <li><a href="https://methane.github.io/about/">About</a></li>
+          <li><a href="https://methane.github.io//posts/">Posts</a></li>
+          <li><a href="https://methane.github.io//about/">About</a></li>
           </ul>
         </div>
       </div>
@@ -51,10 +51,10 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
        
        <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
-          <li class="sidebar-brand"><a href="https://methane.github.io/"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
+          <li class="sidebar-brand"><a href="https://methane.github.io//"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
           <hr />
-          <li><a href="https://methane.github.io/posts/">Posts</a></li>
-          <li><a href="https://methane.github.io/about/">About</a></li>
+          <li><a href="https://methane.github.io//posts/">Posts</a></li>
+          <li><a href="https://methane.github.io//about/">About</a></li>
           <hr />
           <div id="social-wrapper">
            <li> <a href="https://twitter.com/methane"><i class="fa fa-twitter-square"></i> @twitter</a></li>
@@ -78,7 +78,7 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 
 <p>Why this feature is important is described in <a href="https://vividcortex.com/blog/2014/11/19/analyzing-prepared-statement-performance-with-vividcortex/">here</a> and <a href="https://eng.uservoice.com/blog/2015/01/28/introducing-gocraft/dbr/">here</a>. I don&rsquo;t say lot about it here.</p>
 
-<p>When writing low level library like mysql driver, you can&rsquo;t assume user&rsquo;s performance requiremnt. Especially, avoiding memory allocations is important. Go&rsquo;s GC is not so fast. And everyone want memory usage of their server is stable.</p>
+<p>When writing low level library like MySQL driver, you can&rsquo;t assume user&rsquo;s performance requirements. Especially, avoiding memory allocations is important. Go&rsquo;s GC is not so fast. And everyone want memory usage of their server is stable.</p>
 
 <p>So I&rsquo;ve reduced allocations in the interpolation as possible. This post describes how I did it and coding tips to avoid allocations.</p>
 
