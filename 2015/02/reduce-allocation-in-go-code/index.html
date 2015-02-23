@@ -129,7 +129,7 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 
 <p>To run it:</p>
 
-<pre><code class="language-console">$ go test -bench=BenchmarkInterpolation
+<pre><code class="language-bash">$ go test -bench=BenchmarkInterpolation
 PASS
 BenchmarkInterpolation	  300000	      3887 ns/op	    1144 B/op	      15 allocs/op
 ok  	github.com/go-sql-driver/mysql	2.386s
@@ -141,7 +141,7 @@ ok  	github.com/go-sql-driver/mysql	2.386s
 
 <p>But using it while running <code>go test -bench=BenchmarkInterpolation</code> makes huge log including large noise. To reduce log, build <code>mysql.test</code> with <code>go test -c</code> and run it.</p>
 
-<pre><code class="language-console">$ go test -c
+<pre><code class="language-bash">$ go test -c
 $ GODEBUG=allocfreetrace=1 ./mysql.test -test.run=none -test.bench=BenchmarkInter -test.benchtime=10ms 2&gt;trace.log
 PASS
 BenchmarkInterpolation      5000          4095 ns/op        1144 B/op         15 allocs/op
@@ -194,7 +194,7 @@ created by testing.(*B).run
 
 <p>OK. It&rsquo;s time to start optimize. Let&rsquo;s record current benchmark result. I use it later.</p>
 
-<pre><code class="language-console">$ go test -bench=BenchmarkInterpolation | tee old.txt
+<pre><code class="language-bash">$ go test -bench=BenchmarkInterpolation | tee old.txt
 PASS
 BenchmarkInterpolation	  500000	      3942 ns/op	    1144 B/op	      15 allocs/op
 ok  	github.com/go-sql-driver/mysql	3.219s
@@ -241,7 +241,7 @@ query := strings.Join(parts, &quot;&quot;)
 
 <p><code>benchcmp</code> is famous tool to compare benchmark result. You can include it&rsquo;s output in commit log. It makes your commit looks cool.</p>
 
-<pre><code class="language-console">$ go get -u golang.org/x/tools/cmd/benchcmp
+<pre><code class="language-bash">$ go get -u golang.org/x/tools/cmd/benchcmp
 $ go test -bench=BenchmarkInterpolation &gt; new.txt
 $ benchcmp old.txt new.txt
 benchmark                  old ns/op     new ns/op     delta

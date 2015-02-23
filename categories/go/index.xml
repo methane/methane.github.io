@@ -72,7 +72,7 @@
 
 &lt;p&gt;To run it:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-console&#34;&gt;$ go test -bench=BenchmarkInterpolation
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go test -bench=BenchmarkInterpolation
 PASS
 BenchmarkInterpolation	  300000	      3887 ns/op	    1144 B/op	      15 allocs/op
 ok  	github.com/go-sql-driver/mysql	2.386s
@@ -84,7 +84,7 @@ ok  	github.com/go-sql-driver/mysql	2.386s
 
 &lt;p&gt;But using it while running &lt;code&gt;go test -bench=BenchmarkInterpolation&lt;/code&gt; makes huge log including large noise. To reduce log, build &lt;code&gt;mysql.test&lt;/code&gt; with &lt;code&gt;go test -c&lt;/code&gt; and run it.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-console&#34;&gt;$ go test -c
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go test -c
 $ GODEBUG=allocfreetrace=1 ./mysql.test -test.run=none -test.bench=BenchmarkInter -test.benchtime=10ms 2&amp;gt;trace.log
 PASS
 BenchmarkInterpolation      5000          4095 ns/op        1144 B/op         15 allocs/op
@@ -137,7 +137,7 @@ created by testing.(*B).run
 
 &lt;p&gt;OK. It&amp;rsquo;s time to start optimize. Let&amp;rsquo;s record current benchmark result. I use it later.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-console&#34;&gt;$ go test -bench=BenchmarkInterpolation | tee old.txt
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go test -bench=BenchmarkInterpolation | tee old.txt
 PASS
 BenchmarkInterpolation	  500000	      3942 ns/op	    1144 B/op	      15 allocs/op
 ok  	github.com/go-sql-driver/mysql	3.219s
@@ -184,7 +184,7 @@ query := strings.Join(parts, &amp;quot;&amp;quot;)
 
 &lt;p&gt;&lt;code&gt;benchcmp&lt;/code&gt; is famous tool to compare benchmark result. You can include it&amp;rsquo;s output in commit log. It makes your commit looks cool.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-console&#34;&gt;$ go get -u golang.org/x/tools/cmd/benchcmp
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ go get -u golang.org/x/tools/cmd/benchcmp
 $ go test -bench=BenchmarkInterpolation &amp;gt; new.txt
 $ benchcmp old.txt new.txt
 benchmark                  old ns/op     new ns/op     delta
