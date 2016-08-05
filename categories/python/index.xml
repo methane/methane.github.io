@@ -50,11 +50,11 @@ This is not only memory efficient, but also make it fast especially extension mo
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
 you can do it for ASCII or Latin-1 string.&lt;/p&gt;
 
-&lt;h2 id=&#34;pep-393-summarized:f558fad8cd1c1826bc94968b224919bb&#34;&gt;PEP 393 summarized&lt;/h2&gt;
+&lt;h2 id=&#34;pep-393-summarized&#34;&gt;PEP 393 summarized&lt;/h2&gt;
 
 &lt;p&gt;There are some internal representation for unicode.&lt;/p&gt;
 
-&lt;h3 id=&#34;compact-non-ascii:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Compact (non ASCII)&lt;/h3&gt;
+&lt;h3 id=&#34;compact-non-ascii&#34;&gt;Compact (non ASCII)&lt;/h3&gt;
 
 &lt;p&gt;Compact representation is basic form of unicode.&lt;/p&gt;
 
@@ -95,7 +95,7 @@ This is how it encode utf-8:&lt;/p&gt;
 &lt;p&gt;As you can see, this is slower and inefficient than &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; since it has additional malloc and memcpy.
 You should prefer &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; except that you know cache is used later.&lt;/p&gt;
 
-&lt;h3 id=&#34;compact-ascii:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Compact ASCII&lt;/h3&gt;
+&lt;h3 id=&#34;compact-ascii&#34;&gt;Compact ASCII&lt;/h3&gt;
 
 &lt;p&gt;ASCII string is special:&lt;/p&gt;
 
@@ -114,11 +114,11 @@ You should prefer &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; except that 
 
 &lt;p&gt;&lt;code&gt;PyUnicode_AsUTF8()&lt;/code&gt; and &lt;code&gt;PyUnicode_AsUTF8AndSize()&lt;/code&gt; doesn&amp;rsquo;t create cache.  You can use it free.&lt;/p&gt;
 
-&lt;h3 id=&#34;legacy:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Legacy&lt;/h3&gt;
+&lt;h3 id=&#34;legacy&#34;&gt;Legacy&lt;/h3&gt;
 
 &lt;p&gt;Legacy representation is only for support deprecated APIs.&lt;/p&gt;
 
-&lt;h2 id=&#34;case-1-ultrajson-https-github-com-esnme-ultrajson:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Case 1: &lt;a href=&#34;https://github.com/esnme/ultrajson&#34;&gt;UltraJSON&lt;/a&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;case-1-ultrajson-https-github-com-esnme-ultrajson&#34;&gt;Case 1: &lt;a href=&#34;https://github.com/esnme/ultrajson&#34;&gt;UltraJSON&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;UltraJSON is fast JSON encoder and decoder.&lt;/p&gt;
 
@@ -163,7 +163,7 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;case-2-meinheld-https-github-com-mopemope-meinheld:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Case 2: &lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;meinheld&lt;/a&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;case-2-meinheld-https-github-com-mopemope-meinheld&#34;&gt;Case 2: &lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;meinheld&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;meinheld is fast WSGI server.  It can be used with &lt;a href=&#34;http://gunicorn.org/&#34;&gt;gunicorn&lt;/a&gt; or &lt;a href=&#34;http://circus.readthedocs.org/&#34;&gt;circus&lt;/a&gt; + &lt;a href=&#34;https://chaussette.readthedocs.org/&#34;&gt;chaussette&lt;/a&gt;.&lt;/p&gt;
 

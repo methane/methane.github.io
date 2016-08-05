@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <link href="" rel="alternate" type="application/rss+xml" title="Python Bytes" />
-  <link href="https://methane.github.io//css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://methane.github.io//css/hc.css" rel="stylesheet">
+  <link href="https://methane.github.io/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://methane.github.io/css/hc.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <script>
 var host = "methane.github.io";
@@ -39,8 +39,8 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li><a href="https://methane.github.io//posts/">Posts</a></li>
-          <li><a href="https://methane.github.io//about/">About</a></li>
+          <li><a href="https://methane.github.io/posts/">Posts</a></li>
+          <li><a href="https://methane.github.io/about/">About</a></li>
           </ul>
         </div>
       </div>
@@ -51,10 +51,10 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
        
        <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
-          <li class="sidebar-brand"><a href="https://methane.github.io//"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
+          <li class="sidebar-brand"><a href="https://methane.github.io/"><h1 class="brand">Python Bytes</h1></a><h3></h3></li>
           <hr />
-          <li><a href="https://methane.github.io//posts/">Posts</a></li>
-          <li><a href="https://methane.github.io//about/">About</a></li>
+          <li><a href="https://methane.github.io/posts/">Posts</a></li>
+          <li><a href="https://methane.github.io/about/">About</a></li>
           <hr />
           <div id="social-wrapper">
            <li> <a href="https://twitter.com/methane"><i class="fa fa-twitter-square"></i> @twitter</a></li>
@@ -82,13 +82,13 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 
 <p>So I&rsquo;ve reduced allocations in the interpolation as possible. This post describes how I did it and coding tips to avoid allocations.</p>
 
-<h2 id="1-write-it-correct:29df4c67b192e7f62a16d98407a447bd">1. Write it correct.</h2>
+<h2 id="1-write-it-correct">1. Write it correct.</h2>
 
 <p>Since it was new feature, I wrote it quickly like writing Python code. (Go can be used like Python or C!).</p>
 
 <p>I&rsquo;ve made pull request with &ldquo;[RFC]&rdquo; in title. We&rsquo;ve discussed about feature and rough design first.</p>
 
-<h2 id="2-write-benchmark-program:29df4c67b192e7f62a16d98407a447bd">2. Write benchmark program.</h2>
+<h2 id="2-write-benchmark-program">2. Write benchmark program.</h2>
 
 <p>Before starting tuning, I&rsquo;ve prepared benchmark program to confirm performance difference.</p>
 
@@ -135,7 +135,7 @@ BenchmarkInterpolation	  300000	      3887 ns/op	    1144 B/op	      15 allocs/o
 ok  	github.com/go-sql-driver/mysql	2.386s
 </code></pre>
 
-<h2 id="3-identify-allocations:29df4c67b192e7f62a16d98407a447bd">3. Identify allocations</h2>
+<h2 id="3-identify-allocations">3. Identify allocations</h2>
 
 <p>When setting <code>allocfreetrace=1</code> to environment variable <code>GODEBUG</code>, you can see stacktrace where allocation occures (<a href="http://golang.org/pkg/runtime/#pkg-overview">reference</a>).</p>
 
@@ -190,7 +190,7 @@ created by testing.(*B).run
 	}
 </code></pre>
 
-<h2 id="4-tuning-up:29df4c67b192e7f62a16d98407a447bd">4. Tuning up</h2>
+<h2 id="4-tuning-up">4. Tuning up</h2>
 
 <p>OK. It&rsquo;s time to start optimize. Let&rsquo;s record current benchmark result. I use it later.</p>
 
@@ -200,7 +200,7 @@ BenchmarkInterpolation	  500000	      3942 ns/op	    1144 B/op	      15 allocs/o
 ok  	github.com/go-sql-driver/mysql	3.219s
 </code></pre>
 
-<h3 id="4-1-avoid-concatenate-strings-use-byte-and-append:29df4c67b192e7f62a16d98407a447bd">4.1. Avoid concatenate strings, Use []byte and append</h3>
+<h3 id="4-1-avoid-concatenate-strings-use-byte-and-append">4.1. Avoid concatenate strings, Use []byte and append</h3>
 
 <p>My first version is very Pythonic. When interpolating <code>db.Exec(&quot;SELECT SLEEP(?)&quot;, 42)</code>, my code did like this:</p>
 
@@ -235,7 +235,7 @@ query := strings.Join(parts, &quot;&quot;)
                 ...
 </code></pre>
 
-<h3 id="4-2-use-benchcmp:29df4c67b192e7f62a16d98407a447bd">4.2. Use benchcmp</h3>
+<h3 id="4-2-use-benchcmp">4.2. Use benchcmp</h3>
 
 <p>I&rsquo;ve made first optimization. Let&rsquo;s measure it.</p>
 
@@ -257,7 +257,7 @@ BenchmarkInterpolation     1144          560           -51.05%
 <p>You can see number of allocation is reduced from 15 to 6.
 Execution time and memory consumption are also reduced.</p>
 
-<h3 id="4-3-avoid-time-format:29df4c67b192e7f62a16d98407a447bd">4.3. Avoid Time.Format()</h3>
+<h3 id="4-3-avoid-time-format">4.3. Avoid Time.Format()</h3>
 
 <p><code>time.Time</code> doesn&rsquo;t provides methods like <code>strconv.AppendInt()</code>.
 To avoid making temporary string, I&rsquo;ve wrote it myself.</p>
@@ -332,7 +332,7 @@ To avoid making temporary string, I&rsquo;ve wrote it myself.</p>
     BenchmarkInterpolation     6              4              -33.33%
 </code></pre>
 
-<h3 id="4-4-avoid-range-when-iterating-string:29df4c67b192e7f62a16d98407a447bd">4.4. Avoid <code>range</code> when iterating string</h3>
+<h3 id="4-4-avoid-range-when-iterating-string">4.4. Avoid <code>range</code> when iterating string</h3>
 
 <p>Usually, <code>range</code> is used for iterating slice. But <code>for _, c := range s</code> (where <code>s</code> is <code>string</code>) produces <code>rune</code>, not <code>byte</code>.</p>
 
@@ -357,7 +357,7 @@ To avoid making temporary string, I&rsquo;ve wrote it myself.</p>
     BenchmarkInterpolation     4              3              -25.00%
 </code></pre>
 
-<h3 id="4-5-append-string-to-byte-directly:29df4c67b192e7f62a16d98407a447bd">4.5. <code>append</code> <code>string</code> to <code>[]byte</code> directly</h3>
+<h3 id="4-5-append-string-to-byte-directly">4.5. <code>append</code> <code>string</code> to <code>[]byte</code> directly</h3>
 
 <p>Concatenating slices can be written like <code>buf = append(buf, token...)</code>. Basically, <code>buf</code> and <code>token</code> should have same type. But there is one exception: when <code>buf</code> is <code>[]byte</code>, <code>token</code> can be <code>string</code>.</p>
 
@@ -390,7 +390,7 @@ To avoid making temporary string, I&rsquo;ve wrote it myself.</p>
 
 <p>I couldn&rsquo;t reduce allocation from this change. But I could improve readability a lot.</p>
 
-<h3 id="4-6-make-two-same-function-for-byte-and-for-string:29df4c67b192e7f62a16d98407a447bd">4.6. Make two same function: for []byte and for string</h3>
+<h3 id="4-6-make-two-same-function-for-byte-and-for-string">4.6. Make two same function: for []byte and for string</h3>
 
 <p>MySQL requires same escaping for binary and string.</p>
 
@@ -411,7 +411,7 @@ Generally speaking, duplicated code is evil. But <code>TEXT</code> and <code>BLO
     BenchmarkInterpolation     496           448           -9.68%
 </code></pre>
 
-<h3 id="4-7-use-send-receive-buffer-for-scratchpad:29df4c67b192e7f62a16d98407a447bd">4.7. Use send/receive buffer for scratchpad</h3>
+<h3 id="4-7-use-send-receive-buffer-for-scratchpad">4.7. Use send/receive buffer for scratchpad</h3>
 
 <p>Last two allocation is: (1) Make scratchpad buffer for interpolate, and (2) convert it to string.</p>
 
@@ -429,7 +429,7 @@ Generally speaking, duplicated code is evil. But <code>TEXT</code> and <code>BLO
     BenchmarkInterpolation     448           160           -64.29%
 </code></pre>
 
-<h2 id="conclusion:29df4c67b192e7f62a16d98407a447bd">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>Go&rsquo;s compiler is not intelligent compared with gcc or clang. You should use some tips to reduce allocation.</p>
 

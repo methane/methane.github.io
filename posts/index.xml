@@ -25,13 +25,13 @@
 
 &lt;p&gt;So I&amp;rsquo;ve reduced allocations in the interpolation as possible. This post describes how I did it and coding tips to avoid allocations.&lt;/p&gt;
 
-&lt;h2 id=&#34;1-write-it-correct:29df4c67b192e7f62a16d98407a447bd&#34;&gt;1. Write it correct.&lt;/h2&gt;
+&lt;h2 id=&#34;1-write-it-correct&#34;&gt;1. Write it correct.&lt;/h2&gt;
 
 &lt;p&gt;Since it was new feature, I wrote it quickly like writing Python code. (Go can be used like Python or C!).&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;ve made pull request with &amp;ldquo;[RFC]&amp;rdquo; in title. We&amp;rsquo;ve discussed about feature and rough design first.&lt;/p&gt;
 
-&lt;h2 id=&#34;2-write-benchmark-program:29df4c67b192e7f62a16d98407a447bd&#34;&gt;2. Write benchmark program.&lt;/h2&gt;
+&lt;h2 id=&#34;2-write-benchmark-program&#34;&gt;2. Write benchmark program.&lt;/h2&gt;
 
 &lt;p&gt;Before starting tuning, I&amp;rsquo;ve prepared benchmark program to confirm performance difference.&lt;/p&gt;
 
@@ -78,7 +78,7 @@ BenchmarkInterpolation	  300000	      3887 ns/op	    1144 B/op	      15 allocs/o
 ok  	github.com/go-sql-driver/mysql	2.386s
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;3-identify-allocations:29df4c67b192e7f62a16d98407a447bd&#34;&gt;3. Identify allocations&lt;/h2&gt;
+&lt;h2 id=&#34;3-identify-allocations&#34;&gt;3. Identify allocations&lt;/h2&gt;
 
 &lt;p&gt;When setting &lt;code&gt;allocfreetrace=1&lt;/code&gt; to environment variable &lt;code&gt;GODEBUG&lt;/code&gt;, you can see stacktrace where allocation occures (&lt;a href=&#34;http://golang.org/pkg/runtime/#pkg-overview&#34;&gt;reference&lt;/a&gt;).&lt;/p&gt;
 
@@ -133,7 +133,7 @@ created by testing.(*B).run
 	}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;4-tuning-up:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4. Tuning up&lt;/h2&gt;
+&lt;h2 id=&#34;4-tuning-up&#34;&gt;4. Tuning up&lt;/h2&gt;
 
 &lt;p&gt;OK. It&amp;rsquo;s time to start optimize. Let&amp;rsquo;s record current benchmark result. I use it later.&lt;/p&gt;
 
@@ -143,7 +143,7 @@ BenchmarkInterpolation	  500000	      3942 ns/op	    1144 B/op	      15 allocs/o
 ok  	github.com/go-sql-driver/mysql	3.219s
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;4-1-avoid-concatenate-strings-use-byte-and-append:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.1. Avoid concatenate strings, Use []byte and append&lt;/h3&gt;
+&lt;h3 id=&#34;4-1-avoid-concatenate-strings-use-byte-and-append&#34;&gt;4.1. Avoid concatenate strings, Use []byte and append&lt;/h3&gt;
 
 &lt;p&gt;My first version is very Pythonic. When interpolating &lt;code&gt;db.Exec(&amp;quot;SELECT SLEEP(?)&amp;quot;, 42)&lt;/code&gt;, my code did like this:&lt;/p&gt;
 
@@ -178,7 +178,7 @@ query := strings.Join(parts, &amp;quot;&amp;quot;)
                 ...
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;4-2-use-benchcmp:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.2. Use benchcmp&lt;/h3&gt;
+&lt;h3 id=&#34;4-2-use-benchcmp&#34;&gt;4.2. Use benchcmp&lt;/h3&gt;
 
 &lt;p&gt;I&amp;rsquo;ve made first optimization. Let&amp;rsquo;s measure it.&lt;/p&gt;
 
@@ -200,7 +200,7 @@ BenchmarkInterpolation     1144          560           -51.05%
 &lt;p&gt;You can see number of allocation is reduced from 15 to 6.
 Execution time and memory consumption are also reduced.&lt;/p&gt;
 
-&lt;h3 id=&#34;4-3-avoid-time-format:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.3. Avoid Time.Format()&lt;/h3&gt;
+&lt;h3 id=&#34;4-3-avoid-time-format&#34;&gt;4.3. Avoid Time.Format()&lt;/h3&gt;
 
 &lt;p&gt;&lt;code&gt;time.Time&lt;/code&gt; doesn&amp;rsquo;t provides methods like &lt;code&gt;strconv.AppendInt()&lt;/code&gt;.
 To avoid making temporary string, I&amp;rsquo;ve wrote it myself.&lt;/p&gt;
@@ -275,7 +275,7 @@ To avoid making temporary string, I&amp;rsquo;ve wrote it myself.&lt;/p&gt;
     BenchmarkInterpolation     6              4              -33.33%
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;4-4-avoid-range-when-iterating-string:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.4. Avoid &lt;code&gt;range&lt;/code&gt; when iterating string&lt;/h3&gt;
+&lt;h3 id=&#34;4-4-avoid-range-when-iterating-string&#34;&gt;4.4. Avoid &lt;code&gt;range&lt;/code&gt; when iterating string&lt;/h3&gt;
 
 &lt;p&gt;Usually, &lt;code&gt;range&lt;/code&gt; is used for iterating slice. But &lt;code&gt;for _, c := range s&lt;/code&gt; (where &lt;code&gt;s&lt;/code&gt; is &lt;code&gt;string&lt;/code&gt;) produces &lt;code&gt;rune&lt;/code&gt;, not &lt;code&gt;byte&lt;/code&gt;.&lt;/p&gt;
 
@@ -300,7 +300,7 @@ To avoid making temporary string, I&amp;rsquo;ve wrote it myself.&lt;/p&gt;
     BenchmarkInterpolation     4              3              -25.00%
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;4-5-append-string-to-byte-directly:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.5. &lt;code&gt;append&lt;/code&gt; &lt;code&gt;string&lt;/code&gt; to &lt;code&gt;[]byte&lt;/code&gt; directly&lt;/h3&gt;
+&lt;h3 id=&#34;4-5-append-string-to-byte-directly&#34;&gt;4.5. &lt;code&gt;append&lt;/code&gt; &lt;code&gt;string&lt;/code&gt; to &lt;code&gt;[]byte&lt;/code&gt; directly&lt;/h3&gt;
 
 &lt;p&gt;Concatenating slices can be written like &lt;code&gt;buf = append(buf, token...)&lt;/code&gt;. Basically, &lt;code&gt;buf&lt;/code&gt; and &lt;code&gt;token&lt;/code&gt; should have same type. But there is one exception: when &lt;code&gt;buf&lt;/code&gt; is &lt;code&gt;[]byte&lt;/code&gt;, &lt;code&gt;token&lt;/code&gt; can be &lt;code&gt;string&lt;/code&gt;.&lt;/p&gt;
 
@@ -333,7 +333,7 @@ To avoid making temporary string, I&amp;rsquo;ve wrote it myself.&lt;/p&gt;
 
 &lt;p&gt;I couldn&amp;rsquo;t reduce allocation from this change. But I could improve readability a lot.&lt;/p&gt;
 
-&lt;h3 id=&#34;4-6-make-two-same-function-for-byte-and-for-string:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.6. Make two same function: for []byte and for string&lt;/h3&gt;
+&lt;h3 id=&#34;4-6-make-two-same-function-for-byte-and-for-string&#34;&gt;4.6. Make two same function: for []byte and for string&lt;/h3&gt;
 
 &lt;p&gt;MySQL requires same escaping for binary and string.&lt;/p&gt;
 
@@ -354,7 +354,7 @@ Generally speaking, duplicated code is evil. But &lt;code&gt;TEXT&lt;/code&gt; a
     BenchmarkInterpolation     496           448           -9.68%
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;4-7-use-send-receive-buffer-for-scratchpad:29df4c67b192e7f62a16d98407a447bd&#34;&gt;4.7. Use send/receive buffer for scratchpad&lt;/h3&gt;
+&lt;h3 id=&#34;4-7-use-send-receive-buffer-for-scratchpad&#34;&gt;4.7. Use send/receive buffer for scratchpad&lt;/h3&gt;
 
 &lt;p&gt;Last two allocation is: (1) Make scratchpad buffer for interpolate, and (2) convert it to string.&lt;/p&gt;
 
@@ -372,7 +372,7 @@ Generally speaking, duplicated code is evil. But &lt;code&gt;TEXT&lt;/code&gt; a
     BenchmarkInterpolation     448           160           -64.29%
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;conclusion:29df4c67b192e7f62a16d98407a447bd&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;Go&amp;rsquo;s compiler is not intelligent compared with gcc or clang. You should use some tips to reduce allocation.&lt;/p&gt;
 
@@ -421,11 +421,11 @@ This is not only memory efficient, but also make it fast especially extension mo
 Before Python 3.3, there are no way to build unicode by byte-to-byte operation.  Since Python 3.3,
 you can do it for ASCII or Latin-1 string.&lt;/p&gt;
 
-&lt;h2 id=&#34;pep-393-summarized:f558fad8cd1c1826bc94968b224919bb&#34;&gt;PEP 393 summarized&lt;/h2&gt;
+&lt;h2 id=&#34;pep-393-summarized&#34;&gt;PEP 393 summarized&lt;/h2&gt;
 
 &lt;p&gt;There are some internal representation for unicode.&lt;/p&gt;
 
-&lt;h3 id=&#34;compact-non-ascii:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Compact (non ASCII)&lt;/h3&gt;
+&lt;h3 id=&#34;compact-non-ascii&#34;&gt;Compact (non ASCII)&lt;/h3&gt;
 
 &lt;p&gt;Compact representation is basic form of unicode.&lt;/p&gt;
 
@@ -466,7 +466,7 @@ This is how it encode utf-8:&lt;/p&gt;
 &lt;p&gt;As you can see, this is slower and inefficient than &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; since it has additional malloc and memcpy.
 You should prefer &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; except that you know cache is used later.&lt;/p&gt;
 
-&lt;h3 id=&#34;compact-ascii:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Compact ASCII&lt;/h3&gt;
+&lt;h3 id=&#34;compact-ascii&#34;&gt;Compact ASCII&lt;/h3&gt;
 
 &lt;p&gt;ASCII string is special:&lt;/p&gt;
 
@@ -485,11 +485,11 @@ You should prefer &lt;code&gt;PyUnicode_AsUTF8String()&lt;/code&gt; except that 
 
 &lt;p&gt;&lt;code&gt;PyUnicode_AsUTF8()&lt;/code&gt; and &lt;code&gt;PyUnicode_AsUTF8AndSize()&lt;/code&gt; doesn&amp;rsquo;t create cache.  You can use it free.&lt;/p&gt;
 
-&lt;h3 id=&#34;legacy:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Legacy&lt;/h3&gt;
+&lt;h3 id=&#34;legacy&#34;&gt;Legacy&lt;/h3&gt;
 
 &lt;p&gt;Legacy representation is only for support deprecated APIs.&lt;/p&gt;
 
-&lt;h2 id=&#34;case-1-ultrajson-https-github-com-esnme-ultrajson:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Case 1: &lt;a href=&#34;https://github.com/esnme/ultrajson&#34;&gt;UltraJSON&lt;/a&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;case-1-ultrajson-https-github-com-esnme-ultrajson&#34;&gt;Case 1: &lt;a href=&#34;https://github.com/esnme/ultrajson&#34;&gt;UltraJSON&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;UltraJSON is fast JSON encoder and decoder.&lt;/p&gt;
 
@@ -534,7 +534,7 @@ index e56aa9b..a5b2f62 100644
 10000 loops, best of 3: 7.14 usec per loop
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;case-2-meinheld-https-github-com-mopemope-meinheld:f558fad8cd1c1826bc94968b224919bb&#34;&gt;Case 2: &lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;meinheld&lt;/a&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;case-2-meinheld-https-github-com-mopemope-meinheld&#34;&gt;Case 2: &lt;a href=&#34;https://github.com/mopemope/meinheld&#34;&gt;meinheld&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;meinheld is fast WSGI server.  It can be used with &lt;a href=&#34;http://gunicorn.org/&#34;&gt;gunicorn&lt;/a&gt; or &lt;a href=&#34;http://circus.readthedocs.org/&#34;&gt;circus&lt;/a&gt; + &lt;a href=&#34;https://chaussette.readthedocs.org/&#34;&gt;chaussette&lt;/a&gt;.&lt;/p&gt;
 
